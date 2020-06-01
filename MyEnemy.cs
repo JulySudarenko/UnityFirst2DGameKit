@@ -6,10 +6,12 @@ internal class MyEnemy : MonoBehaviour
     #region Fields
 
     private SpriteRenderer _sprite;
-    [SerializeField] private AudioClip _dieMoment;
-    
+    //[SerializeField] private AudioClip _dieMoment;
+    [SerializeField] private int _steps;
     [SerializeField] private int _health = 2;
     [SerializeField] private float _speed = 2.0f;
+
+    private Vector3 _startPositon;
 
     #endregion
 
@@ -19,6 +21,7 @@ internal class MyEnemy : MonoBehaviour
     private void Start()
     {
         _sprite = gameObject.GetComponent<SpriteRenderer>();
+        _startPositon = gameObject.transform.position;
     }
 
     private void Update()
@@ -27,7 +30,7 @@ internal class MyEnemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //MoveLeft();
+        Move();
     }
 
     #endregion
@@ -46,14 +49,12 @@ internal class MyEnemy : MonoBehaviour
         }
     }
 
-    public void MoveLeft()
+    public void Move()
     {
-        transform.Translate(Vector3.left * _speed * Time.deltaTime, Space.World);
-    }
-
-    public void MoveRight()
-    {
-        transform.Translate(Vector3.right * _speed * Time.deltaTime, Space.World);
+        if (gameObject.transform.position.x <= _startPositon.x)
+            gameObject.transform.position += Vector3.left * _speed * Time.deltaTime;
+        if (gameObject.transform.position.x >= _startPositon.x + _steps)
+            gameObject.transform.position += Vector3.right * _speed * Time.deltaTime;
     }
 
     private void Die()

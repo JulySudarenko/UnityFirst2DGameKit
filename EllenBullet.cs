@@ -18,7 +18,6 @@ public class EllenBullet : MonoBehaviour
         Destroy(gameObject, _lifeTime);
     }
 
-    // Update is called once per frame
     private void Update()
     {
         gameObject.transform.position += transform.right * _speed * Time.deltaTime;
@@ -32,9 +31,9 @@ public class EllenBullet : MonoBehaviour
             enemy.Hurt(_damage);
         }
 
-        if (!collision.gameObject.CompareTag("Player")) Destroy(gameObject);
+        if (!collision.gameObject.CompareTag("Player")) 
+            Destroy(gameObject);
     }
 
     #endregion
-
 }
