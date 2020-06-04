@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Accessibility;
+
 
 internal class MyEnemy : MonoBehaviour
 {
@@ -29,7 +29,7 @@ internal class MyEnemy : MonoBehaviour
         _rigitbody = GetComponent<Rigidbody2D>();
         _sprite = gameObject.GetComponent<SpriteRenderer>();
         _startPosition = gameObject.transform.position;
-        _moveDirection.x = 1;
+        _moveDirection = Vector3.right;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -62,13 +62,15 @@ internal class MyEnemy : MonoBehaviour
     {
         if (transform.position.x > (_startPosition.x + _steps))
         {
-            _moveDirection.x *= -1;
+            _moveDirection = Vector3.left;
+            IsForward = false;
             Flip();
         }
 
         else if (transform.position.x < _startPosition.x)
         {
-            _moveDirection.x *= -1;
+            _moveDirection = Vector3.right;
+            IsForward = true;
             Flip();
         }
     }
@@ -87,7 +89,7 @@ internal class MyEnemy : MonoBehaviour
 
     private void Flip()
     {
-        IsForward = !IsForward;
+        //IsForward = !IsForward;
         Vector3 vector = Vector3.zero;
         vector.y = IsForward ? 0 : 180;
         transform.rotation = Quaternion.Euler(vector);
