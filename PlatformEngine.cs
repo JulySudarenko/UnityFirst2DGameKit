@@ -41,7 +41,7 @@ internal class PlatformEngine : MonoBehaviour
 
     public void PlatformStartY()
     {
-        _moveDirection.y = _speed;
+        _moveDirection = Vector3.down;
     }
 
     private void PlatformMoveDirection()
@@ -52,9 +52,9 @@ internal class PlatformEngine : MonoBehaviour
             _moveDirection.x *= -1;
 
         if (transform.position.y > _finishPosition.y)
-            _moveDirection.y *= -1;
+            _moveDirection = Vector3.down;
         else if (transform.position.y < _startPosition.y)
-            _moveDirection.y *= -1;
+            _moveDirection = Vector3.up;
     }
 
     #endregion

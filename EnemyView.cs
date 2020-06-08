@@ -8,9 +8,11 @@ public class EnemyView : MonoBehaviour
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _distance;
 
+
     private MyEnemy _enemy;
     private RaycastHit2D _hit;
     private float _viewUp = 1.3f;
+    private float _groundDistance = 0.1f;
 
     #endregion
 
@@ -26,30 +28,42 @@ public class EnemyView : MonoBehaviour
 
     public void Update()
     {
-        Vision();
+        VisionForward();
+        VisionGround();
     }
+
+
 
     #endregion
 
 
     #region Methods
 
-    private void Vision()
+    private void VisionGround()
+    {
+        _hit = Physics2D.Raycast(transform.position, Vector2.down, _groundDistance, _layerMask);
+        if (!_hit)
+        {
+            if (_enemy.Movement > 0)
+                _enemy.TurnLeft();
+            if (_enemy.Movement > 0)
+                _enemy.TurnRight();
+        }
+
+    }
+
+    private void VisionForward()
     {
         Vector3 viewStart = new Vector3(transform.position.x, transform.position.y + _viewUp, transform.position.z);
-        Vector3 viewFinish = new Vector3(transform.position.x + _distance, transform.position.y + _viewUp, transform.position.z);
-
-
+ 
         if (_enemy.IsForward)
         {
             _hit = Physics2D.Raycast(viewStart, Vector2.right, _distance, _layerMask);
-            Debug.DrawRay(viewStart, Vector2.right * _distance, Color.red);
         }
 
         else
         {
             _hit = Physics2D.Raycast(viewStart, Vector2.left, _distance, _layerMask);
-            Debug.DrawRay(viewStart, Vector2.left * _distance, Color.red);
         }
 
         if (_hit)
@@ -61,6 +75,8 @@ public class EnemyView : MonoBehaviour
         else
             _enemy.Patrol();
     }
+
+
 
 
     #endregion

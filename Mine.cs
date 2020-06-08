@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class Mine : MonoBehaviour
@@ -9,16 +8,27 @@ public class Mine : MonoBehaviour
     [SerializeField] private LayerMask _mask;
     [SerializeField] private float _mineForce;
     [SerializeField] private int _mineDamage;
+    [SerializeField] private int _mineThrow;
+
+    private Rigidbody2D _rigidbody;
 
     #endregion
 
 
     #region UnityMethods
 
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody.AddForce(transform.right * _mineThrow, ForceMode2D.Impulse);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Rigidbody2D victim = collision.rigidbody;
-        MineDetonate(victim);
+        if (!collision.gameObject.CompareTag("Ground"))
+        {
+            MineDetonate();
+        }
     }
 
     #endregion
@@ -26,24 +36,28 @@ public class Mine : MonoBehaviour
 
     #region Methods
 
-    private void MineDetonate(Rigidbody2D victim)
+    private void MineDetonate()
     {
-
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, _mineForce, _mask);
-        Vector3 direction = hit.transform.position - transform.position;       
-        victim.AddForce(direction * _mineForce, ForceMode2D.Impulse);
-        
-        //List<Rigidbody2D> rbHit = new List<Rigidbody2D>();
-        //rbHit.Add(hit.attachedRigidbody);
-
-        //for (int i = 0; i < rbHit.Count; i++)
-        //{
-        //    rbHit[i].AddForce(direction * _mineForce, ForceMode2D.Impulse);
-        //    print(rbHit[i].name);
-        //}
-
+        Collider2D[] victims = Physics2D.OverlapCircleAll(transform.position, _mineForce, _mask);
         Destroy(gameObject);
-        print(victim.name);
+
+        for (int i = 0; i < victims.Length; i++)
+        {
+            Vector3 direction = victims[i].transform.position - transform.position;
+            victims[i].attachedRigidbody.AddForce(direction.normalized * _mineForce, ForceMode2D.Impulse);
+            print(victims[i].name);
+
+            if (victims[i].CompareTag("Player"))
+            {
+                victims[i].GetComponent<EllenHealth>().Hurt(_mineDamage);
+            }
+
+            else if (victims[i].CompareTag("Enemy"))
+            {
+                victims[i].GetComponent<MyEnemy>().Hurt(_mineDamage);
+            }
+        }
+
     }
 
     #endregion

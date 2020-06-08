@@ -49,13 +49,13 @@ public class EllenHealth : MonoBehaviour
     {
         _health += _healthPerAid;
         Instantiate(_heartFullEllen, gameObject.transform.position + _deltaHeartPosition, Quaternion.Euler(Vector3.zero));
-        print($"Здоровье Элен: {_health}\n");
+        print($"Ellen health: {_health}\n");
     }
 
     public void Hurt(int damage)
     {
         _health -= damage;
-        print($"Здоровье Элен: {_health}\n");
+        print($"Ellen health: {_health}\n");
 
         if (_health <= 0)
         {

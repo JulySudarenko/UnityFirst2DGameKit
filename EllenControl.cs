@@ -5,20 +5,23 @@ public class EllenControl : MonoBehaviour
 {
     #region Fields
 
+    public float Movement;
+    public bool IsGrounded;
+
     [SerializeField] private GameObject _bullet;
     [SerializeField] private GameObject _mine;
     [SerializeField] private LayerMask _mask;
     [SerializeField] private Transform _startBulletTransform;
+    [SerializeField] private Transform _mineStartTransform;
 
-    [SerializeField] private Vector3 _mineDistance;
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
+    [SerializeField] private float _jumpForceMax;
     [SerializeField] private int _mineCountity;
 
     private Rigidbody2D _rigidbody;
     private Vector3 _moveDirection = Vector3.zero;
-    private float _groundDistance = 0.1f;
-    private bool _isGrounded;
+    private float _groundDistance = 0.2f;
     private bool _isForward = true;
 
     #endregion
@@ -34,6 +37,10 @@ public class EllenControl : MonoBehaviour
     private void Update()
     {
         _moveDirection.x = Input.GetAxis("Horizontal");
+        if (IsGrounded)
+        {
+            Movement = _moveDirection.x;
+        }
 
         if (Input.GetButtonDown("Jump"))
             Jump();
@@ -49,7 +56,7 @@ public class EllenControl : MonoBehaviour
     {
         _rigidbody.transform.position += _moveDirection * _speed * Time.deltaTime;
 
-        //CheckGround();
+        CheckGround();
 
         if (_moveDirection.x > 0 && !_isForward)
             Flip();
@@ -77,15 +84,15 @@ public class EllenControl : MonoBehaviour
 
     private void Jump()
     {
-        //if (_isGrounded)
-        //{
-        _rigidbody.AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
-        //}
+        if (IsGrounded)
+        {
+            _rigidbody.AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
+        }
     }
 
     private void MineInstaller()
     {
-        Instantiate(_mine, transform.position + _mineDistance, Quaternion.Euler(Vector3.zero));
+        Instantiate(_mine, _mineStartTransform.position, _mineStartTransform.transform.rotation);
     }
 
     private void CheckGround()
@@ -94,12 +101,13 @@ public class EllenControl : MonoBehaviour
 
         if (hit)
         {
-            _isGrounded = true;
-            print(hit.collider.gameObject.name);
+            IsGrounded = true;
         }
 
         else
-            _isGrounded = false;
+        {
+            IsGrounded = false;
+        }
     }
 
     #endregion

@@ -23,11 +23,6 @@ public class EllenBullet : MonoBehaviour
         _rigidbody.AddForce(transform.right * _speed, ForceMode2D.Impulse);
     }
 
-    private void Update()
-    {
-        //gameObject.transform.position += transform.right * _speed * Time.deltaTime;
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.CompareTag("Enemy"))
