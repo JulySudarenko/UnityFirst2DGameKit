@@ -47,15 +47,29 @@ internal class PlatformEngine : MonoBehaviour
     private void PlatformMoveDirection()
     {
         if (transform.position.x > _finishPosition.x)
+        {
             _moveDirection.x *= -1;
+        }
         else if (transform.position.x < _startPosition.x)
+        {
             _moveDirection.x *= -1;
+        }
+
 
         if (transform.position.y > _finishPosition.y)
+        {
             _moveDirection = Vector3.down;
+        }
         else if (transform.position.y < _startPosition.y)
+        {
             _moveDirection = Vector3.up;
+        }
     }
+
+    //m_Velocity = direction.normalized* dist;
+
+    //m_Rigidbody2D.MovePosition(m_Rigidbody2D.position + m_Velocity);
+    //            platformCatcher.MoveCaughtObjects(m_Velocity);
 
     #endregion
 }

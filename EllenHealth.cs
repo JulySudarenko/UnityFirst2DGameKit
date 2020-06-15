@@ -5,14 +5,9 @@ public class EllenHealth : MonoBehaviour
 {
     #region Fields
 
-    [SerializeField] private GameObject _heartEllen;
-    [SerializeField] private GameObject _heartFullEllen;
-    [SerializeField] private GameObject _heartItem;
-
-    [SerializeField] private Vector3 _deltaHeartPosition;
-
     [SerializeField] private int _health;
     [SerializeField] private int _healthPerAid;
+    private EllenInventory _takenObject;
 
     #endregion
 
@@ -21,7 +16,9 @@ public class EllenHealth : MonoBehaviour
 
     private void Start()
     {
-        Instantiate(_heartEllen, (gameObject.transform.position + _deltaHeartPosition), Quaternion.Euler(Vector3.zero));
+        _takenObject = GetComponentInChildren<EllenInventory>();
+        _takenObject.SetHealthBar(_health);
+        _takenObject.SetHealth(_health);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -29,15 +26,8 @@ public class EllenHealth : MonoBehaviour
         if (collision.gameObject.CompareTag("Heart"))
         {
             AidPickUp();
-
-            var heart = collision.gameObject.GetComponent<PickUp>();
-            heart.Remove();
+            _takenObject.SetHealthBar(_health);
         }
-    }
-
-    private void Update()
-    {
-        _heartEllen.transform.position = gameObject.transform.position + _deltaHeartPosition;
     }
 
     #endregion
@@ -48,14 +38,14 @@ public class EllenHealth : MonoBehaviour
     private void AidPickUp()
     {
         _health += _healthPerAid;
-        Instantiate(_heartFullEllen, gameObject.transform.position + _deltaHeartPosition, Quaternion.Euler(Vector3.zero));
-        print($"Ellen health: {_health}\n");
+        _takenObject.SetHealth(_health);
     }
 
     public void Hurt(int damage)
     {
         _health -= damage;
-        print($"Ellen health: {_health}\n");
+        _takenObject.SetHealth(_health);
+        _takenObject.SetHealthBar(_health);
 
         if (_health <= 0)
         {

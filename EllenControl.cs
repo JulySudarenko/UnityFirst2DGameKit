@@ -5,19 +5,14 @@ public class EllenControl : MonoBehaviour
 {
     #region Fields
 
-    public float Movement;
-    public bool IsGrounded;
+    [HideInInspector] public float Movement;
+    [HideInInspector] public bool IsGrounded;
 
-    [SerializeField] private GameObject _bullet;
-    [SerializeField] private GameObject _mine;
     [SerializeField] private LayerMask _mask;
-    [SerializeField] private Transform _startBulletTransform;
-    [SerializeField] private Transform _mineStartTransform;
 
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _jumpForceMax;
-    [SerializeField] private int _mineCountity;
 
     private Rigidbody2D _rigidbody;
     private Vector3 _moveDirection = Vector3.zero;
@@ -36,32 +31,14 @@ public class EllenControl : MonoBehaviour
 
     private void Update()
     {
-        _moveDirection.x = Input.GetAxis("Horizontal");
-        if (IsGrounded)
-        {
-            Movement = _moveDirection.x;
-        }
-
-        if (Input.GetButtonDown("Jump"))
-            Jump();
-
-        if (Input.GetButtonDown("Fire1"))
-            Fire();
-
-        if (Input.GetKeyDown(KeyCode.M))
-            MineInstaller();
+        MoveDirection();
+        Jump();
     }
 
     private void FixedUpdate()
     {
-        _rigidbody.transform.position += _moveDirection * _speed * Time.deltaTime;
-
         CheckGround();
-
-        if (_moveDirection.x > 0 && !_isForward)
-            Flip();
-        else if (_moveDirection.x < 0 && _isForward)
-            Flip();
+        Move();
     }
 
     #endregion
@@ -69,9 +46,24 @@ public class EllenControl : MonoBehaviour
 
     #region Methods
 
-    private void Fire()
+    private void MoveDirection()
     {
-        Instantiate(_bullet, _startBulletTransform.position, _startBulletTransform.rotation);
+        _moveDirection.x = Input.GetAxis("Horizontal");
+
+        if (IsGrounded)
+        {
+            Movement = _moveDirection.x;
+        }
+    }
+
+    private void Move()
+    {
+        _rigidbody.transform.position += _moveDirection * _speed * Time.deltaTime;
+
+        if (_moveDirection.x > 0 && !_isForward)
+            Flip();
+        else if (_moveDirection.x < 0 && _isForward)
+            Flip();
     }
 
     private void Flip()
@@ -84,15 +76,10 @@ public class EllenControl : MonoBehaviour
 
     private void Jump()
     {
-        if (IsGrounded)
+        if (Input.GetButtonDown("Jump") && IsGrounded)
         {
             _rigidbody.AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
         }
-    }
-
-    private void MineInstaller()
-    {
-        Instantiate(_mine, _mineStartTransform.position, _mineStartTransform.transform.rotation);
     }
 
     private void CheckGround()

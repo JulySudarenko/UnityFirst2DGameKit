@@ -15,7 +15,7 @@ public class MyCamera : MonoBehaviour
 
     private void FixedUpdate()
     {
-        gameObject.transform.position = _playerEllen.transform.position + _deltaCameraPosition;
+       gameObject.transform.position = _playerEllen.transform.position + _deltaCameraPosition;
     }
 
     #endregion
