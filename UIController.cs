@@ -35,7 +35,6 @@ public class UIController : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Player"))
         {
-            print("Hello next Level");
             LoadLevel(_nextSceneNumber);
         }
     }
