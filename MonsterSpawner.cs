@@ -16,15 +16,26 @@ public class MonsterSpawner : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        int counter = 0;
         if (collision.gameObject.CompareTag("Player"))
         {
-            while (counter < _enemyCountity)
+            for(int i = 0; i < _enemyCountity; i++)
             {
-                Instantiate(_enemy, _spawnPoint.position, _spawnPoint.rotation);
-                counter++;
+                Vector3 random = RandomPoint();
+                Instantiate(_enemy, random, _spawnPoint.rotation);
             }
         }
+    }
+
+    #endregion
+
+
+    #region Methods
+
+    private Vector3 RandomPoint()
+    {
+        Vector3 vector = _spawnPoint.position;
+        vector.x += Random.Range(0, 4);
+        return vector;
     }
 
     #endregion
