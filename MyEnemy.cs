@@ -26,7 +26,7 @@ internal class MyEnemy : MonoBehaviour
     private void Start()
     {
         _startPosition = gameObject.transform.position;
-        _moveDirection = Vector3.right;
+        _moveDirection = Vector3.left;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
