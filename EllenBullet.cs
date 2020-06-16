@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
+
 public class EllenBullet : MonoBehaviour
 {
     #region Fields
 
-    [SerializeField] private float _speed = 3.0f;
+    [SerializeField] private float _speed = 20.0f;
     [SerializeField] private float _lifeTime = 4.0f;
     [SerializeField] private int _damage = 1;
+
+    private Rigidbody2D _rigidbody;
 
     #endregion
 
@@ -16,12 +19,13 @@ public class EllenBullet : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject, _lifeTime);
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody.AddForce(transform.right * _speed, ForceMode2D.Impulse);
     }
 
-    // Update is called once per frame
     private void Update()
     {
-        gameObject.transform.position += transform.right * _speed * Time.deltaTime;
+        //gameObject.transform.position += transform.right * _speed * Time.deltaTime;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -32,9 +36,9 @@ public class EllenBullet : MonoBehaviour
             enemy.Hurt(_damage);
         }
 
-        if (!collision.gameObject.CompareTag("Player")) Destroy(gameObject);
+        if (!collision.gameObject.CompareTag("Player")) 
+            Destroy(gameObject);
     }
 
     #endregion
-
 }
