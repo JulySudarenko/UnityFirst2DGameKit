@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+
 public class ChomperAnimation : MonoBehaviour
 {
     #region Fields
@@ -40,6 +41,11 @@ public class ChomperAnimation : MonoBehaviour
     public void ShowAttack(bool isAttack)
     {
         _animator.SetBool("Attack", isAttack);
+    }
+
+    public void DieAnimation(bool isDead)
+    {
+        _animator.SetBool("Die", isDead);
     }
     
     #endregion

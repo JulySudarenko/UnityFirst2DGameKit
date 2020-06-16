@@ -43,21 +43,25 @@ public class Mine : MonoBehaviour
 
         for (int i = 0; i < victims.Length; i++)
         {
-            Vector3 direction = victims[i].transform.position - transform.position;
-            victims[i].attachedRigidbody.AddForce(direction.normalized * _mineForce, ForceMode2D.Impulse);
-            print(victims[i].name);
+            ExplosionDamage(victims[i]);
+        }
+    }
 
-            if (victims[i].CompareTag("Player"))
-            {
-                victims[i].GetComponent<EllenHealth>().Hurt(_mineDamage);
-            }
+    private void ExplosionDamage(Collider2D victim)
+    {
+        Vector3 direction = victim.transform.position - transform.position;
+        victim.attachedRigidbody.AddForce((direction.normalized * _mineForce - victim.transform.position), ForceMode2D.Impulse);
+        print(victim.name);
 
-            else if (victims[i].CompareTag("Enemy"))
-            {
-                victims[i].GetComponent<MyEnemy>().Hurt(_mineDamage);
-            }
+        if (victim.CompareTag("Player"))
+        {
+            victim.GetComponent<EllenHealth>().Hurt(_mineDamage);
         }
 
+        else if (victim.CompareTag("Enemy"))
+        {
+            victim.GetComponent<MyEnemy>().Hurt(_mineDamage);
+        }
     }
 
     #endregion

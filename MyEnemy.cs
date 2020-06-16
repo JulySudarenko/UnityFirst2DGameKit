@@ -5,18 +5,15 @@ internal class MyEnemy : MonoBehaviour
 {
     #region Fields
 
-    public float Movement;
-    public bool IsForward = true;
-    public bool IsAttack;
-
+    [HideInInspector] public float Movement;
+    [HideInInspector] public bool IsForward = true;
+    [HideInInspector] public bool IsAttack = false;
+    
+    [SerializeField] private float _speed = 2.0f;
+    [SerializeField] private float _attackSpeed;
     [SerializeField] private int _steps;
     [SerializeField] private int _health = 2;
     [SerializeField] private int _attackDamage;
-    [SerializeField] private float _speed = 2.0f;
-    [SerializeField] private float _attackSpeed;
-
-    private SpriteRenderer _sprite;
-    private Rigidbody2D _rigitbody;
 
     private Vector3 _startPosition;
     private Vector3 _moveDirection = Vector3.zero;
@@ -28,15 +25,24 @@ internal class MyEnemy : MonoBehaviour
 
     private void Start()
     {
-        _rigitbody = GetComponent<Rigidbody2D>();
-        _sprite = gameObject.GetComponent<SpriteRenderer>();
         _startPosition = gameObject.transform.position;
         _moveDirection = Vector3.right;
     }
 
-    private void Update()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Movement = _moveDirection.x * _speed;
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<EllenHealth>().Hurt(_attackDamage);
+        }
+        else if (collision.gameObject.CompareTag("Wall"))
+        {
+            CheckPosition(collision.gameObject.transform.position.x);
+        }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            CheckPosition(collision.gameObject.transform.position.x);
+        }
     }
 
     #endregion
@@ -47,7 +53,6 @@ internal class MyEnemy : MonoBehaviour
     public void Hurt(int damage)
     {
         _health -= damage;
-        _sprite.color = Color.red;
 
         if (_health <= 0)
         {
@@ -55,26 +60,12 @@ internal class MyEnemy : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.gameObject.GetComponent<EllenHealth>().Hurt(_attackDamage);
-            print("Damage!");
-            //IsAttack = true;
-        }
-
-        else if (collision.gameObject.CompareTag("Wall"))
-            CheckPosition(collision.gameObject.transform.position.x);
-    }
-
-    public void MoveDirection()
+    private void MoveDirection()
     {
         if (transform.position.x > (_startPosition.x + _steps))
         {
             TurnLeft();
         }
-
         else if (transform.position.x < _startPosition.x)
         {
             TurnRight();
@@ -86,6 +77,7 @@ internal class MyEnemy : MonoBehaviour
         MoveDirection();
         transform.position += _moveDirection * _speed * Time.deltaTime;
         IsAttack = false;
+        Movement = _moveDirection.x * _speed;
     }
 
     public void EnemyAttack(GameObject hit)
@@ -93,10 +85,9 @@ internal class MyEnemy : MonoBehaviour
         if (hit.CompareTag("Player"))
         {
             IsAttack = true;
-            print("Can see!");
             transform.position += _moveDirection * _attackSpeed * Time.deltaTime;
+            Movement = _moveDirection.x * _attackSpeed;
         }
-
     }
 
     public void TurnLeft()
@@ -123,10 +114,13 @@ internal class MyEnemy : MonoBehaviour
     private void CheckPosition(float positionX)
     {
         if (transform.position.x > positionX)
+        {
             TurnRight();
-
-        if (transform.position.x < positionX)
+        }
+        else if (transform.position.x < positionX)
+        {
             TurnLeft();
+        }
     }
 
     private void Die()
