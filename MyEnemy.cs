@@ -5,7 +5,10 @@ internal class MyEnemy : MonoBehaviour
 {
     #region Fields
 
-    //[SerializeField] private AudioClip _dieMoment;
+    public float Movement;
+    public bool IsForward = true;
+    public bool IsAttack;
+
     [SerializeField] private int _steps;
     [SerializeField] private int _health = 2;
     [SerializeField] private int _attackDamage;
@@ -17,7 +20,6 @@ internal class MyEnemy : MonoBehaviour
 
     private Vector3 _startPosition;
     private Vector3 _moveDirection = Vector3.zero;
-    public bool IsForward = true;
 
     #endregion
 
@@ -32,14 +34,9 @@ internal class MyEnemy : MonoBehaviour
         _moveDirection = Vector3.right;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void Update()
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            var player = collision.gameObject.GetComponent<EllenHealth>();
-            print("Damage!");
-            player.Hurt(_attackDamage);
-        }
+        Movement = _moveDirection.x * _speed;
     }
 
     #endregion
@@ -58,20 +55,29 @@ internal class MyEnemy : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<EllenHealth>().Hurt(_attackDamage);
+            print("Damage!");
+            //IsAttack = true;
+        }
+
+        else if (collision.gameObject.CompareTag("Wall"))
+            CheckPosition(collision.gameObject.transform.position.x);
+    }
+
     public void MoveDirection()
     {
         if (transform.position.x > (_startPosition.x + _steps))
         {
-            _moveDirection = Vector3.left;
-            IsForward = false;
-            Flip();
+            TurnLeft();
         }
 
         else if (transform.position.x < _startPosition.x)
         {
-            _moveDirection = Vector3.right;
-            IsForward = true;
-            Flip();
+            TurnRight();
         }
     }
 
@@ -79,20 +85,48 @@ internal class MyEnemy : MonoBehaviour
     {
         MoveDirection();
         transform.position += _moveDirection * _speed * Time.deltaTime;
+        IsAttack = false;
     }
 
     public void EnemyAttack(GameObject hit)
     {
-        print("Can see!");
-        transform.position += _moveDirection * _attackSpeed * Time.deltaTime;
+        if (hit.CompareTag("Player"))
+        {
+            IsAttack = true;
+            print("Can see!");
+            transform.position += _moveDirection * _attackSpeed * Time.deltaTime;
+        }
+
     }
 
-    private void Flip()
+    public void TurnLeft()
     {
-        //IsForward = !IsForward;
+        _moveDirection = Vector3.left;
+        IsForward = false;
+        Flip();
+    }
+
+    public void TurnRight()
+    {
+        _moveDirection = Vector3.right;
+        IsForward = true;
+        Flip();
+    }
+
+    public void Flip()
+    {
         Vector3 vector = Vector3.zero;
         vector.y = IsForward ? 0 : 180;
         transform.rotation = Quaternion.Euler(vector);
+    }
+
+    private void CheckPosition(float positionX)
+    {
+        if (transform.position.x > positionX)
+            TurnRight();
+
+        if (transform.position.x < positionX)
+            TurnLeft();
     }
 
     private void Die()
