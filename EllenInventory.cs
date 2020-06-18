@@ -7,8 +7,11 @@ public class EllenInventory : MonoBehaviour
 {
     #region Field
 
+    [HideInInspector] public bool HasKey = false;
+
     [SerializeField] private TMP_Text _textMineCount;
     [SerializeField] private TMP_Text _textHealth;
+    [SerializeField] private Text _helpingMessage;
     [SerializeField] private Image _key;
     [SerializeField] private Image _healthBar;
     [SerializeField] private float _maxHealth;
@@ -47,6 +50,12 @@ public class EllenInventory : MonoBehaviour
     public void ShowKeyImage(bool isTaken)
     {
         _key.enabled = isTaken;
+        HasKey = true;
+    }
+
+    public void HelpMessage(string message)
+    {
+        _helpingMessage.text = message;
     }
 
     #endregion

@@ -8,7 +8,8 @@ internal class MyEnemy : MonoBehaviour
     [HideInInspector] public float Movement;
     [HideInInspector] public bool IsForward = true;
     [HideInInspector] public bool IsAttack = false;
-    
+    [HideInInspector] public bool IsDead = false;
+
     [SerializeField] private float _speed = 2.0f;
     [SerializeField] private float _attackSpeed;
     [SerializeField] private int _steps;
@@ -56,6 +57,8 @@ internal class MyEnemy : MonoBehaviour
 
         if (_health <= 0)
         {
+            IsDead = true;
+            gameObject.GetComponent<AudioPlayer>().PlaySound();
             Die();
         }
     }

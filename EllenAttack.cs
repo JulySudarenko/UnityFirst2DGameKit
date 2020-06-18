@@ -7,6 +7,8 @@ public sealed class EllenAttack : MonoBehaviour
 
     [SerializeField] private GameObject _bullet;
     [SerializeField] private GameObject _mine;
+    [SerializeField] private GameObject _bulletSound;
+    [SerializeField] private GameObject _mineSound;
     [SerializeField] private Transform _startBulletTransform;
     [SerializeField] private Transform _mineStartTransform;
     [SerializeField] private int _mineCountity;
@@ -49,6 +51,7 @@ public sealed class EllenAttack : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Instantiate(_bullet, _startBulletTransform.position, _startBulletTransform.rotation);
+            _bulletSound.GetComponent<AudioPlayer>().PlaySound();
         }
     }
 

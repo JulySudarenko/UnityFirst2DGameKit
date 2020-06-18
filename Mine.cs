@@ -5,6 +5,7 @@ public class Mine : MonoBehaviour
 {
     #region Field
 
+    [SerializeField] private GameObject _mineExplosionEffect;
     [SerializeField] private LayerMask _mask;
     [SerializeField] private float _mineForce;
     [SerializeField] private int _mineDamage;
@@ -39,12 +40,14 @@ public class Mine : MonoBehaviour
     private void MineDetonate()
     {
         Collider2D[] victims = Physics2D.OverlapCircleAll(transform.position, _mineForce, _mask);
-        Destroy(gameObject);
+        ExplosionEffect();
 
         for (int i = 0; i < victims.Length; i++)
         {
             ExplosionDamage(victims[i]);
         }
+
+        Destroy(gameObject);
     }
 
     private void ExplosionDamage(Collider2D victim)
@@ -62,6 +65,13 @@ public class Mine : MonoBehaviour
         {
             victim.GetComponent<MyEnemy>().Hurt(_mineDamage);
         }
+    }
+
+    private void ExplosionEffect()
+    {
+        var explosion = Instantiate(_mineExplosionEffect, gameObject.transform.position, gameObject.transform.rotation);
+        gameObject.GetComponent<AudioPlayer>().PlaySound();
+        Destroy(explosion, explosion.GetComponent<ParticleSystem>().main.startLifetimeMultiplier);
     }
 
     #endregion

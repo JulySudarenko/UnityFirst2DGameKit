@@ -12,19 +12,15 @@ public class DoorAnimation : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    private void Update()
-    {
-        DoorOpening();
-    }
-
     #endregion
 
 
-    #region UnityMethods
+    #region Methods
 
-    private void DoorOpening()
+    public void DoorOpening()
     {
         _animator.SetBool("isOpen", true);
+        gameObject.GetComponent<AudioPlayer>().PlaySound();
     }
 
     #endregion

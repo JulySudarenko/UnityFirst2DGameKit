@@ -26,7 +26,7 @@ internal class PlatformEngine : MonoBehaviour
     private void FixedUpdate()
     {
         PlatformMoveDirection();
-        _rigidbody.transform.position += _moveDirection * _speed * Time.deltaTime;
+        MovePosition();
     }
 
     #endregion
@@ -66,10 +66,12 @@ internal class PlatformEngine : MonoBehaviour
         }
     }
 
-    //m_Velocity = direction.normalized* dist;
-
-    //m_Rigidbody2D.MovePosition(m_Rigidbody2D.position + m_Velocity);
-    //            platformCatcher.MoveCaughtObjects(m_Velocity);
+    private void MovePosition()
+    {
+        var currentPosition = transform.position;
+        var nextPosition = _moveDirection * _speed * Time.deltaTime;
+        _rigidbody.MovePosition(currentPosition + nextPosition);
+    }
 
     #endregion
 }

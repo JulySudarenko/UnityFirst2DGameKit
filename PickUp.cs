@@ -10,6 +10,7 @@ public sealed class PickUp : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Remove();
+            gameObject.GetComponent<AudioPlayer>().PlaySound();
         }
     }
 
