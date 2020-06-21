@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine;
 
 
 public sealed class EllenAttack : MonoBehaviour
@@ -8,7 +9,6 @@ public sealed class EllenAttack : MonoBehaviour
     [SerializeField] private GameObject _bullet;
     [SerializeField] private GameObject _mine;
     [SerializeField] private GameObject _bulletSound;
-    [SerializeField] private GameObject _mineSound;
     [SerializeField] private Transform _startBulletTransform;
     [SerializeField] private Transform _mineStartTransform;
     [SerializeField] private int _mineCountity;
@@ -34,7 +34,7 @@ public sealed class EllenAttack : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Mine"))
+        if (collision.gameObject.CompareTag("Mine"))
         {
             _mineCountity++;
             _takenObject.SetMineQuontity(_mineCountity);
@@ -48,20 +48,24 @@ public sealed class EllenAttack : MonoBehaviour
 
     private void Fire()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire3") || CrossPlatformInputManager.GetButtonDown("Fire"))
         {
             Instantiate(_bullet, _startBulletTransform.position, _startBulletTransform.rotation);
             _bulletSound.GetComponent<AudioPlayer>().PlaySound();
         }
+
     }
 
     private void Mine()
     {
-        if (Input.GetKeyDown(KeyCode.M) && _mineCountity > 0)
+        if (_mineCountity > 0)
         {
-            Instantiate(_mine, _mineStartTransform.position, _mineStartTransform.transform.rotation);
-            _mineCountity--;
-            _takenObject.SetMineQuontity(_mineCountity);
+            if (Input.GetButtonDown("Fire2") || CrossPlatformInputManager.GetButtonDown("Mine"))
+            {
+                Instantiate(_mine, _mineStartTransform.position, _mineStartTransform.transform.rotation);
+                _mineCountity--;
+                _takenObject.SetMineQuontity(_mineCountity);
+            }
         }
     }
 
