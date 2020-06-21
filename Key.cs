@@ -22,6 +22,7 @@ public class Key : MonoBehaviour
             if (gameObject.CompareTag("Key"))
             {
                 _takenObject.ShowKeyImage(true);
+                _takenObject.HasKey = true;
             }
         }
     }

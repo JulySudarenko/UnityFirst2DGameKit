@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -17,7 +18,7 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) || CrossPlatformInputManager.GetButtonDown("Pause"))
         {
             if (_isPaused)
             {
@@ -33,7 +34,7 @@ public class UIController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             LoadLevel(_nextSceneNumber);
         }

@@ -50,7 +50,6 @@ public class EllenInventory : MonoBehaviour
     public void ShowKeyImage(bool isTaken)
     {
         _key.enabled = isTaken;
-        HasKey = true;
     }
 
     public void HelpMessage(string message)

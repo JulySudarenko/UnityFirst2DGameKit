@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-
+﻿using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine;
+using System;
 
 public class EllenControl : MonoBehaviour
 {
@@ -50,6 +51,11 @@ public class EllenControl : MonoBehaviour
     {
         _moveDirection.x = Input.GetAxis("Horizontal");
 
+        if (_moveDirection.x == 0.0f)
+        {
+            _moveDirection.x = CrossPlatformInputManager.GetAxis("Horizontal");
+        }
+
         if (IsGrounded)
         {
             Movement = _moveDirection.x;
@@ -61,9 +67,14 @@ public class EllenControl : MonoBehaviour
         _rigidbody.transform.position += _moveDirection * _speed * Time.deltaTime;
 
         if (_moveDirection.x > 0 && !_isForward)
+        {
             Flip();
+        }
         else if (_moveDirection.x < 0 && _isForward)
+        {
             Flip();
+        }
+
     }
 
     private void Flip()
@@ -76,9 +87,12 @@ public class EllenControl : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetButtonDown("Jump") && IsGrounded)
+        if (IsGrounded)
         {
-            _rigidbody.AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
+            if (Input.GetButtonDown("Jump") || CrossPlatformInputManager.GetButtonDown("Jump"))
+            {
+                _rigidbody.AddForce(transform.up * _jumpForce, ForceMode2D.Impulse);
+            }
         }
     }
 
